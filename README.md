@@ -1,16 +1,44 @@
-# React + Vite
+# sag-calc
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+`sag-calc` is a small web application for calculating sag, line-of-sight (LOS), and clearance values for overhead electrical and communication lines.
 
-Currently, two official plugins are available:
+The project is implemented as a client-side single-page application using Vite and React, with Tailwind CSS for styling. It is intended as a practical calculation tool rather than a simulation or engineering-grade analysis system.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## React Compiler
+## Overview
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+The application allows users to enter measured line and clearance values, automatically computes derived sag and LOS metrics, and stores results locally during the session. Calculations update reactively as inputs change, and saved results can be exported for further use.
 
-## Expanding the ESLint configuration
+This repository contains only frontend code; no backend or persistent storage is used.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+---
+
+## Tech Stack
+
+- Vite
+- React
+- Tailwind CSS
+- JavaScript (ES6+)
+
+---
+
+## Live Demo
+
+https://strelec00.github.io/sag-calc/
+
+---
+
+## Requirements
+
+- Node.js `>= 22`
+- npm
+
+---
+
+## Installation
+
+```bash
+git clone https://github.com/strelec00/sag-calc.git
+cd sag-calc
+npm install
