@@ -1,14 +1,35 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
-
+import { useEffect, useState } from "react";
+import "./App.css";
 import LineSagCalculator from "./components/LineSagCalculator.jsx";
 
+const THEME_STORAGE_KEY = "sag-calc-theme";
+
+const getInitialTheme = () => {
+  if (typeof window === "undefined") return "light";
+
+  const storedTheme = window.localStorage.getItem(THEME_STORAGE_KEY);
+  if (storedTheme === "light" || storedTheme === "dark") {
+    return storedTheme;
+  }
+
+  return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+};
+
 export default function App() {
+  const [theme, setTheme] = useState(getInitialTheme);
+
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", theme);
+    window.localStorage.setItem(THEME_STORAGE_KEY, theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme((currentTheme) => (currentTheme === "light" ? "dark" : "light"));
+  };
+
   return (
-    <div className="min-h-screen p-6 bg-gray-100 dark:bg-black">
-      <LineSagCalculator />
+    <div className="app-shell">
+      <LineSagCalculator theme={theme} onToggleTheme={toggleTheme} />
     </div>
   );
 }

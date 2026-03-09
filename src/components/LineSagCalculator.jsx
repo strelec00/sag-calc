@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 
-export default function LineSagCalculator() {
+export default function LineSagCalculator({ theme, onToggleTheme }) {
   const initialState = {
     orangeLine: "",
     orangeToPink: "",
@@ -184,153 +184,158 @@ export default function LineSagCalculator() {
     URL.revokeObjectURL(url);
   };
 
+  const measurementFields = [
+    { name: "orangeLine", label: "Lowest Primary Cable" },
+    { name: "orangeToPink", label: "Distance Secondary LOS" },
+    { name: "pinkLine", label: "Lowest Secondary Cable" },
+    { name: "pinkToPurple", label: "Distance to Comm LOS (From Secondary)" },
+    { name: "purpleLine", label: "Comm Clearance" },
+  ];
+
+  const currentResults = result
+    ? [
+        { label: "COMM LOS", value: result.commLOS },
+        { label: "CONDUCTOR SAG", value: result.conductorSag },
+        { label: "CONDUCTOR LOS", value: result.conductorLOS },
+        { label: "COMM SAG", value: result.commSag },
+        { label: "COMM CLEARANCE", value: result.commClearance },
+      ]
+    : [];
+
   return (
-    <div className="max-w-4xl mx-auto space-y-6 p-4 bg-white dark:bg-gray-900 rounded-2xl shadow-xl">
-      <h1 className="text-2xl font-bold text-center text-blue-700 dark:text-blue-300">
-        Line Sag Calculator
-      </h1>
+    <div className="calc-shell">
+      <header className="calc-header">
+        <div className="header-top-row">
+          <span className="header-chip">{editingIndex !== null ? "Editing Saved Span" : "Field Entry"}</span>
+          <button
+            type="button"
+            onClick={onToggleTheme}
+            className="theme-toggle"
+            aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
+          >
+            {theme === "dark" ? "Light Mode" : "Dark Mode"}
+          </button>
+        </div>
+        <h1 className="calc-title">Line Sag Calculator</h1>
+        <p className="calc-subtitle">
+          Enter measured cable heights, review computed sag values, and keep a clean history for export.
+        </p>
+      </header>
 
-      <div className="grid md:grid-cols-2 gap-8">
-        <div className="space-y-4">
-          {[
-            { name: "orangeLine", label: "Lowest Primary Cable" },
-            { name: "orangeToPink", label: "Distance Secondary LOS" },
-            { name: "pinkLine", label: "Lowest Secondary Cable" },
-            { name: "pinkToPurple", label: "Distance to Comm LOS (From Secondary)" },
-            { name: "purpleLine", label: "Comm Clearance" },
-          ].map(({ name, label }, index) => (
-            <input
-              key={name}
-              ref={inputRefs[index]}
-              name={name}
-              type="number"
-              step="any"
-              placeholder={label}
-              value={values[name]}
-              onChange={handleChange}
-              onKeyDown={(e) => handleKeyDown(e, index)}
-              className="w-full p-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-black dark:text-white rounded-lg focus:ring focus:ring-blue-300 appearance-none"
-            />
-          ))}
+      <div className="calc-grid">
+        <section className="panel">
+          <h2 className="section-title">Measurement Inputs</h2>
+          <p className="section-copy">Use Enter to move between fields quickly.</p>
 
-          <div className="flex gap-2">
-            <button
-              onClick={resetForm}
-              className="flex-1 bg-gray-300 dark:bg-gray-700 text-gray-800 dark:text-gray-200 py-2 rounded-lg hover:bg-gray-400 dark:hover:bg-gray-600 transition"
-            >
+          <div className="field-grid">
+            {measurementFields.map(({ name, label }, index) => (
+              <label key={name} className="field-row">
+                <span className="field-label">{label}</span>
+                <input
+                  ref={inputRefs[index]}
+                  name={name}
+                  type="number"
+                  step="any"
+                  value={values[name]}
+                  onChange={handleChange}
+                  onKeyDown={(e) => handleKeyDown(e, index)}
+                  className="metric-input"
+                  placeholder="0.00"
+                />
+              </label>
+            ))}
+          </div>
+
+          <div className="btn-row">
+            <button onClick={resetForm} className="btn btn-neutral">
               Reset
             </button>
-
-            <button
-              onClick={saveResult}
-              disabled={!result}
-              className={`flex-1 py-2 rounded-lg transition ${
-                result
-                  ? "bg-green-500 hover:bg-green-600 text-white"
-                  : "bg-gray-200 dark:bg-gray-800 text-gray-500 cursor-not-allowed"
-              }`}
-            >
+            <button onClick={saveResult} disabled={!result} className="btn btn-save">
               Save
             </button>
           </div>
 
           {result && (
-            <div className="mt-4 space-y-2 bg-gray-100 dark:bg-gray-800 p-3 rounded-lg text-sm text-black dark:text-white">
-              <div>
-                <strong>COMM LOS:</strong> {result.commLOS.toFixed(2)} m
-              </div>
-              <div>
-                <strong>CONDUCTOR SAG:</strong> {result.conductorSag.toFixed(2)} m
-              </div>
-              <div>
-                <strong>CONDUCTOR LOS:</strong> {result.conductorLOS.toFixed(2)} m
-              </div>
-              <div>
-                <strong>COMM SAG:</strong> {result.commSag.toFixed(2)} m
-              </div>
-              <div>
-                <strong>COMM CLEARANCE:</strong> {result.commClearance.toFixed(2)} m
+            <div className="results-block">
+              <div className="results-grid">
+                {currentResults.map((item) => (
+                  <article key={item.label} className="result-tile">
+                    <p className="result-label">{item.label}</p>
+                    <p className="result-value">{item.value.toFixed(2)} m</p>
+                  </article>
+                ))}
               </div>
             </div>
           )}
-        </div>
+        </section>
 
-        <div className="space-y-4">
-          <h2 className="text-xl font-semibold text-center text-purple-700 dark:text-purple-300">
-            LOS Calculator
-          </h2>
+        <section className="panel">
+          <h2 className="section-title">LOS Helper</h2>
+          <p className="section-copy">Average two attachment heights to estimate LOS quickly.</p>
 
-          <input
-            type="number"
-            step="any"
-            placeholder="Attachment Height 1"
-            value={losInput.height1}
-            onChange={(e) => setLosInput({ ...losInput, height1: e.target.value })}
-            className="w-full p-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-black dark:text-white rounded-lg appearance-none"
-          />
+          <div className="field-grid">
+            <label className="field-row">
+              <span className="field-label">Attachment Height 1</span>
+              <input
+                type="number"
+                step="any"
+                value={losInput.height1}
+                onChange={(e) => setLosInput({ ...losInput, height1: e.target.value })}
+                className="metric-input"
+                placeholder="0.00"
+              />
+            </label>
 
-          <input
-            type="number"
-            step="any"
-            placeholder="Attachment Height 2"
-            value={losInput.height2}
-            onChange={(e) => setLosInput({ ...losInput, height2: e.target.value })}
-            className="w-full p-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-black dark:text-white rounded-lg appearance-none"
-          />
+            <label className="field-row">
+              <span className="field-label">Attachment Height 2</span>
+              <input
+                type="number"
+                step="any"
+                value={losInput.height2}
+                onChange={(e) => setLosInput({ ...losInput, height2: e.target.value })}
+                className="metric-input"
+                placeholder="0.00"
+              />
+            </label>
+          </div>
 
-          {losInput.result && (
-            <div className="text-sm text-black dark:text-white">
-              <strong>CALCULATED LOS:</strong> {losInput.result} m
-            </div>
-          )}
-        </div>
+          {losInput.result && <div className="los-preview">Calculated LOS: {losInput.result} m</div>}
+        </section>
       </div>
 
       {history.length > 0 && (
-        <div className="space-y-3">
-          <div className="flex justify-between items-center">
-            <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100">
-              Saved History
-            </h2>
-            <button
-              onClick={exportToCSV}
-              className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg"
-            >
+        <section className="history-wrap">
+          <div className="history-head">
+            <h2 className="history-title">Saved History</h2>
+            <button onClick={exportToCSV} className="btn-export">
               Export to CSV
             </button>
           </div>
 
-          <ul className="space-y-3">
+          <ul className="history-list">
             {history.map((entry, i) => (
-              <li
-                key={`${entry.label}-${i}`}
-                className="bg-gray-50 dark:bg-gray-700 p-3 rounded-md text-sm text-black dark:text-white"
-              >
-                <div className="font-bold mb-1">{entry.label}</div>
-                <div>COMM LOS: {entry.result.commLOS.toFixed(2)} m</div>
-                <div>CONDUCTOR SAG: {entry.result.conductorSag.toFixed(2)} m</div>
-                <div>CONDUCTOR LOS: {entry.result.conductorLOS.toFixed(2)} m</div>
-                <div>COMM SAG: {entry.result.commSag.toFixed(2)} m</div>
-                <div>COMM CLEARANCE: {entry.result.commClearance.toFixed(2)} m</div>
+              <li key={`${entry.label}-${i}`} className="history-item">
+                <p className="history-label">{entry.label}</p>
+                <div className="history-metrics">
+                  <span>COMM LOS: {entry.result.commLOS.toFixed(2)} m</span>
+                  <span>CONDUCTOR SAG: {entry.result.conductorSag.toFixed(2)} m</span>
+                  <span>CONDUCTOR LOS: {entry.result.conductorLOS.toFixed(2)} m</span>
+                  <span>COMM SAG: {entry.result.commSag.toFixed(2)} m</span>
+                  <span>COMM CLEARANCE: {entry.result.commClearance.toFixed(2)} m</span>
+                </div>
 
-                <div className="flex gap-2 mt-2">
-                  <button
-                    onClick={() => handleEdit(i)}
-                    className="text-xs px-2 py-1 bg-yellow-500 hover:bg-yellow-600 text-white rounded"
-                  >
+                <div className="history-actions">
+                  <button onClick={() => handleEdit(i)} className="btn-edit">
                     Edit
                   </button>
-                  <button
-                    onClick={() => deleteEntry(i)}
-                    className="text-xs px-2 py-1 bg-red-500 hover:bg-red-600 text-white rounded"
-                  >
+                  <button onClick={() => deleteEntry(i)} className="btn-delete">
                     Delete
                   </button>
                 </div>
               </li>
             ))}
           </ul>
-        </div>
+        </section>
       )}
     </div>
   );

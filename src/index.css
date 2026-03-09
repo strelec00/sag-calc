@@ -1,71 +1,93 @@
-
 @import "tailwindcss";
 
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  color-scheme: light;
+  --ink-900: #132039;
+  --ink-700: #2a4368;
+  --ink-500: #4d6b93;
+  --sky-100: #eff5ff;
+  --sky-200: #dbe9ff;
+  --sky-300: #bed7ff;
+  --mint-100: #d7f4ec;
+  --mint-500: #1f9873;
+  --sun-100: #fff1cb;
+  --sun-500: #cc8b1a;
+  --danger-500: #c64853;
+  --card: #ffffff;
+  --surface: #f5f8ff;
+  --shell-bg: linear-gradient(180deg, rgba(255, 255, 255, 0.94) 0%, #ffffff 100%);
+  --shell-border: rgba(77, 107, 147, 0.18);
+  --panel-border: rgba(42, 67, 104, 0.12);
+  --input-border: rgba(77, 107, 147, 0.28);
+  --los-bg: rgba(215, 244, 236, 0.72);
+  --los-border: rgba(31, 152, 115, 0.24);
+  --los-text: #0f654b;
+  --neutral-btn-bg: #e6ecf9;
+  --neutral-btn-text: #2f4d77;
+  --result-tile-bg: linear-gradient(160deg, #ffffff 0%, #f4f8ff 100%);
+  --history-item-bg: linear-gradient(160deg, #f9fbff, #f1f6ff);
+  --export-btn-bg: linear-gradient(150deg, #3868b7, #244985);
+  --btn-edit-text: #73500f;
+  --app-bg:
+    radial-gradient(circle at 92% 8%, rgba(214, 234, 255, 0.95), rgba(214, 234, 255, 0) 44%),
+    radial-gradient(circle at 8% 94%, rgba(215, 244, 236, 0.86), rgba(215, 244, 236, 0) 42%),
+    linear-gradient(145deg, #f8fbff 0%, #eef5ff 40%, #f6fbf5 100%);
+  --shadow: 0 26px 54px -28px rgba(20, 45, 95, 0.35);
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --ink-900: #e2ecff;
+  --ink-700: #c1d2f8;
+  --ink-500: #9fb5de;
+  --sky-200: #3a4c73;
+  --mint-100: #23544a;
+  --sun-100: #6d5825;
+  --danger-500: #d8616b;
+  --card: #111a2b;
+  --surface: #0d1728;
+  --shell-bg: linear-gradient(180deg, rgba(15, 24, 40, 0.96) 0%, rgba(10, 17, 30, 0.98) 100%);
+  --shell-border: rgba(159, 186, 238, 0.22);
+  --panel-border: rgba(159, 186, 238, 0.2);
+  --input-border: rgba(159, 186, 238, 0.32);
+  --los-bg: rgba(27, 97, 75, 0.35);
+  --los-border: rgba(118, 226, 186, 0.34);
+  --los-text: #9ee3c9;
+  --neutral-btn-bg: #24395e;
+  --neutral-btn-text: #dae7ff;
+  --result-tile-bg: linear-gradient(160deg, #152540 0%, #111e35 100%);
+  --history-item-bg: linear-gradient(160deg, #152540, #111c31);
+  --export-btn-bg: linear-gradient(150deg, #517ecd, #375ba7);
+  --btn-edit-text: #ffe2a6;
+  --app-bg:
+    radial-gradient(circle at 90% 5%, rgba(47, 72, 119, 0.52), rgba(47, 72, 119, 0) 40%),
+    radial-gradient(circle at 10% 95%, rgba(24, 94, 72, 0.44), rgba(24, 94, 72, 0) 42%),
+    linear-gradient(145deg, #0c1627 0%, #101d34 45%, #102124 100%);
+  --shadow: 0 30px 60px -36px rgba(0, 0, 0, 0.92);
 }
-a:hover {
-  color: #535bf2;
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  min-height: 100%;
 }
 
 body {
-  margin: 0;
-  display: flex;
-  place-items: center;
   min-width: 320px;
-  min-height: 100vh;
+  color: var(--ink-900);
+  font-family: "Avenir Next", "Nunito Sans", "Trebuchet MS", sans-serif;
+  background: var(--app-bg);
+  transition: background 0.25s ease, color 0.25s ease;
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-}
-
+input,
 button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
+  font: inherit;
 }
